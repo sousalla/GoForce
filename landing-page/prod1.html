@@ -526,13 +526,13 @@
           
           <!-- Miniatures défilantes -->
           <div class="thumbnails-scroll">
-            <div class="thumbnail-wrapper active" onclick="changeImage('../prod1/PROD.jpg')">
+            <div class="thumbnail-wrapper active" onclick="changeImage('../prod1/.mockup-capsule-main.jpg')">
               <img src="../prod1/mockup-capsule-main.png" alt="Moringa vue 1" class="thumbnail-img">
             </div>
-            <div class="thumbnail-wrapper" onclick="changeImage('../prod1/PROD-2.jpg')">
+            <div class="thumbnail-wrapper" onclick="changeImage('../prod1/mockup-capsule-left.png')">
               <img src="../prod1/mockup-capsule-left.png" alt="Moringa vue 2" class="thumbnail-img">
             </div>
-            <div class="thumbnail-wrapper" onclick="changeImage('../prod1/PROD-3.jpg')">
+            <div class="thumbnail-wrapper" onclick="changeImage('../prod1/mockup-capsule-right.png')">
               <img src="../prod1/mockup-capsule-right.png" alt="Moringa vue 3" class="thumbnail-img">
             </div>
           </div>
@@ -560,7 +560,7 @@
             
             <div class="mb-3">
               <label class="form-label">رقم الهاتف</label>
-              <input type="tel" class="form-control" id="phone" required placeholder="0653229070">
+              <input type="tel" class="form-control" id="phone" required placeholder="0606XXXXXX">
             </div>
             
             <div class="mb-3">
@@ -582,12 +582,6 @@
                   <option value="3">3 عبوات</option>
                   <option value="4">4 عبوات</option>
                   <option value="5">5 عبوات</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label class="form-label">طريقة الدفع</label>
-                <select class="form-select" id="payment">
-                  <option value="الدفع عند الاستلام">الدفع عند الاستلام</option>
                 </select>
               </div>
             </div>
@@ -630,9 +624,6 @@
             <i class="fas fa-exclamation-circle"></i> حدث خطأ في إرسال الطلب. الرجاء المحاولة مرة أخرى.
           </div>
           
-          <p class="text-muted small mt-3 text-center">
-            <i class="fas fa-lock text-success"></i> معلوماتك آمنة ومحمية
-          </p>
         </div>
       </div>
       
@@ -782,7 +773,7 @@
       </div>
     </div>
     <div class="border-top pt-3 text-center small">
-      © 2025 GoFORCE – جميع الحقوق محفوظة
+      © 2026 GoFORCE – جميع الحقوق محفوظة
     </div>
   </div>
 </footer>
@@ -859,7 +850,6 @@
     const city = document.getElementById('city').value;
     const address = document.getElementById('address').value;
     const quantity = parseInt(document.getElementById('quantity').value);
-    const payment = document.getElementById('payment').value;
     const price = calculatePrice(quantity);
     
     // Préparer les paramètres pour l'email
@@ -870,7 +860,6 @@
       city: city,
       address: address,
       quantity: quantity,
-      payment: payment,
       total: price.total + ' درهم',
       price_per_unit: price.perUnit + ' درهم',
       discount: price.discount || 'لا يوجد',
@@ -947,3 +936,4 @@
 
 </body>
 </html>
+
