@@ -10,8 +10,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <style>
     * {
       font-family: 'Cairo', sans-serif;
@@ -529,7 +527,7 @@
             <div class="thumbnail-wrapper active" onclick="changeImage('../prod1/PROD.jpg')">
               <img src="../prod1/PROD.jpg" alt="Moringa vue 1" class="thumbnail-img">
             </div>
-            <div class="thumbnail-wrapper active" onclick="changeImage('../prod1/mockup-capsule-main.png')">
+            <div class="thumbnail-wrapper" onclick="changeImage('../prod1/mockup-capsule-main.png')">
               <img src="../prod1/mockup-capsule-main.png" alt="Moringa vue 2" class="thumbnail-img">
             </div>
             <div class="thumbnail-wrapper" onclick="changeImage('../prod1/mockup-capsule-left.png')">
@@ -554,32 +552,36 @@
           <h2 class="fw-bold mb-4">طلب <span class="text-success">المورينغا</span></h2>
           <p class="lead mb-4">املأ النموذج أدناه للطلب وسيتم إرساله مباشرة</p>
           
-          <!-- Formulaire avec EmailJS -->
-          <form id="orderForm" onsubmit="sendOrder(event)">
+          <!-- Formulaire avec Formspree -->
+          <form id="orderForm" action="https://formspree.io/f/xlgpdbrz" method="POST">
+            <input type="hidden" name="_subject" value="🛍️ Nouvelle commande GoFORCE - Moringa">
+            <input type="hidden" name="_replyto" value="goforce.contact@gmail.com">
+            <input type="hidden" name="_cc" value="goforce.contact@gmail.com">
+            
             <div class="mb-3">
               <label class="form-label">الاسم الكامل</label>
-              <input type="text" class="form-control" id="name" required placeholder="أدخل اسمك الكامل">
+              <input type="text" class="form-control" name="الاسم" required placeholder="أدخل اسمك الكامل">
             </div>
             
             <div class="mb-3">
               <label class="form-label">رقم الهاتف</label>
-              <input type="tel" class="form-control" id="phone" required placeholder="0606XXXXXX">
+              <input type="tel" class="form-control" name="الهاتف" required placeholder="0606XXXXXX">
             </div>
             
             <div class="mb-3">
               <label class="form-label">المدينة</label>
-              <input type="text" class="form-control" id="city" required placeholder="أدخل اسم مدينتك">
+              <input type="text" class="form-control" name="المدينة" required placeholder="أدخل اسم مدينتك">
             </div>
             
             <div class="mb-3">
               <label class="form-label">العنوان الكامل</label>
-              <textarea class="form-control" id="address" rows="2" required placeholder="العنوان بالتفصيل"></textarea>
+              <textarea class="form-control" name="العنوان" rows="2" required placeholder="العنوان بالتفصيل"></textarea>
             </div>
             
             <div class="row mb-3">
               <div class="col-6">
                 <label class="form-label">الكمية</label>
-                <select class="form-select" id="quantity" onchange="updateTotal()">
+                <select class="form-select" name="الكمية" id="quantity" onchange="updateTotal()">
                   <option value="1">1 عبوة</option>
                   <option value="2">2 عبوات</option>
                   <option value="3">3 عبوات</option>
@@ -588,6 +590,9 @@
                 </select>
               </div>
             </div>
+            
+            <!-- Champ caché pour le total calculé -->
+            <input type="hidden" name="total_commande" id="totalHidden" value="179 درهم">
             
             <!-- Résumé de la commande avec montant calculé -->
             <div class="order-summary mb-4">
@@ -621,10 +626,6 @@
           
           <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
             <i class="fas fa-check-circle"></i> تم إرسال طلبك بنجاح! سنتصل بك قريباً.
-          </div>
-          
-          <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;">
-            <i class="fas fa-exclamation-circle"></i> حدث خطأ في إرسال الطلب. الرجاء المحاولة مرة أخرى.
           </div>
           
         </div>
@@ -739,7 +740,7 @@
         </div>
       </div>
       <div class="col-lg-6">
-        <img src="../about.png" class="img-fluid rounded-5 shadow">
+        <img src="../about.png" class="img-fluid rounded-5 shadow" alt="من نحن">
       </div>
     </div>
   </div>
@@ -792,33 +793,24 @@
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  (function() {
-    emailjs.init("e0qOIkubUI2eUjQ3K"); 
-  })();
-
   // Prix de base
   const BASE_PRICE = 179;
 
   // Calcul des prix selon quantité
   function calculatePrice(quantity) {
     let pricePerUnit = BASE_PRICE;
-    let discount = '';
     
     if (quantity >= 5) {
       pricePerUnit = 149;
-      discount = 'توفير 150 درهم';
     } else if (quantity >= 3) {
       pricePerUnit = 159;
-      discount = 'توفير 60 درهم';
     } else if (quantity >= 2) {
       pricePerUnit = 169;
-      discount = 'توفير 20 درهم';
     }
     
     return {
       total: pricePerUnit * quantity,
-      perUnit: pricePerUnit,
-      discount: discount
+      perUnit: pricePerUnit
     };
   }
 
@@ -830,6 +822,7 @@
     document.getElementById('quantityDisplay').textContent = quantity;
     document.getElementById('subtotal').textContent = price.total + ' درهم';
     document.getElementById('total').textContent = price.total + ' درهم';
+    document.getElementById('totalHidden').value = price.total + ' درهم';
   }
 
   // Fonction pour changer l'image principale
@@ -843,81 +836,16 @@
     event.currentTarget.classList.add('active');
   }
 
-  // Envoyer la commande par email
-  function sendOrder(event) {
-    event.preventDefault();
-    
-    // Récupérer les valeurs
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    const city = document.getElementById('city').value;
-    const address = document.getElementById('address').value;
-    const quantity = parseInt(document.getElementById('quantity').value);
-    const price = calculatePrice(quantity);
-    
-    // Préparer les paramètres pour l'email
-    const templateParams = {
-      to_email: 'goforce.contact@gmail.com',
-      from_name: name,
-      phone: phone,
-      city: city,
-      address: address,
-      quantity: quantity,
-      total: price.total + ' درهم',
-      price_per_unit: price.perUnit + ' درهم',
-      discount: price.discount || 'لا يوجد',
-      product: 'مكمل المورينغا الطبيعي 30 كبسولة'
-    };
-    
-    // Désactiver le bouton pendant l'envoi
-    const submitBtn = document.getElementById('submitBtn');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
-    submitBtn.disabled = true;
-    
-    // Envoyer l'email via EmailJS
-    emailjs.send('default_service', 'template_228153v', templateParams)
-      .then(function(response) {
-        // Succès
-        document.getElementById('successMessage').style.display = 'block';
-        document.getElementById('errorMessage').style.display = 'none';
-        
-        // Réinitialiser le formulaire
-        document.getElementById('orderForm').reset();
-        updateTotal();
-        
-        // Ouvrir WhatsApp
-        const phoneNumber = '212653229070';
-        const whatsappMessage = `*طلب جديد من GoFORCE - المورينغا*%0A%0A` +
-          `👤 *الاسم:* ${name}%0A` +
-          `📱 *الهاتف:* ${phone}%0A` +
-          `🏙️ *المدينة:* ${city}%0A` +
-          `📍 *العنوان:* ${address}%0A` +
-          `📦 *الكمية:* ${quantity} عبوات (${price.perUnit} درهم/عبوة)%0A` +
-          `💰 *المجموع:* ${price.total} درهم%0A` +
-          `💳 *الدفع:* ${payment}%0A` +
-          `📦 *التوصيل:* مجاني`;
-        
-        window.open(`https://wa.me/${phoneNumber}?text=${whatsappMessage}`, '_blank');
-      })
-      .catch(function(error) {
-        // Erreur
-        document.getElementById('errorMessage').style.display = 'block';
+  // Afficher message de succès après redirection Formspree
+  window.addEventListener('load', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('success')) {
+      document.getElementById('successMessage').style.display = 'block';
+      setTimeout(() => {
         document.getElementById('successMessage').style.display = 'none';
-        console.log('Erreur:', error);
-      })
-      .finally(function() {
-        // Réactiver le bouton
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        
-        // Cacher les messages après 5 secondes
-        setTimeout(() => {
-          document.getElementById('successMessage').style.display = 'none';
-          document.getElementById('errorMessage').style.display = 'none';
-        }, 5000);
-      });
-  }
+      }, 5000);
+    }
+  });
 
   // Smooth scroll
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -939,6 +867,3 @@
 
 </body>
 </html>
-
-
-
